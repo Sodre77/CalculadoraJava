@@ -1,0 +1,45 @@
+RELATORIO DO PROJETO
+
+1. Objetivo
+Desenvolver uma calculadora em Java com as quatro operacoes basicas e aplicar testes automatizados com JUnit 5.
+
+2. Implementacao
+A classe Calculadora possui os metodos:
+- somar
+- subtrair
+- multiplicar
+- dividir
+
+A divisao valida erro de divisao por zero e lanca ArithmeticException.
+
+3. Testes automatizados
+Foram criados testes unitarios cobrindo:
+- numeros positivos
+- numeros negativos
+- zero
+- divisao por zero
+
+Tambem foi criado um teste funcional simulando um fluxo com varias operacoes em sequencia.
+
+4. Git e GitHub
+Para a entrega, fazer os seguintes passos:
+- criar conta no GitHub;
+- criar o repositorio do projeto;
+- criar pelo menos uma branch;
+- realizar commits com as alteracoes do projeto;
+- fazer merge entre branchs;
+- clonar um repositorio publico existente para demonstrar a atividade.
+
+5. Evidencias
+Inserir prints mostrando:
+- classe Calculadora implementada;
+- classe de testes JUnit 5;
+- conta GitHub criada;
+- repositorio criado;
+- branch criada;
+- clone de repositorio existente;
+- commits realizados;
+- merge executado.
+
+6. Observacao final
+Este arquivo pode ser usado como base para a explicacao oral e para organizar as evidencias do trabalho.
