@@ -74,17 +74,6 @@ java -jar .\lib\junit-platform-console-standalone-1.10.2.jar --class-path "out\m
 
 - fluxo completo usando varias operacoes em sequencia.
 
-## Git e GitHub
-
-Para atender a atividade, o projeto deve mostrar:
-
-1. criacao de conta no GitHub;
-2. criacao de um repositorio;
-3. criacao de branch;
-4. commits do projeto;
-5. merge entre branches;
-6. clone de um repositorio publico externo.
-
 ## Observacao
 
 Os arquivos de teste foram validados localmente com sucesso usando o JUnit 5 standalone.
