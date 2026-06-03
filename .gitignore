@@ -2,3 +2,5 @@ target/
 .idea/
 .vscode/
 *.iml
+out/
+lib/*.jar
