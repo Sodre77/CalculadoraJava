@@ -14,20 +14,20 @@ A divisao valida erro de divisao por zero e lanca ArithmeticException.
 
 3. Testes automatizados
 Foram criados testes unitarios cobrindo:
-- numeros positivos
-- numeros negativos
-- zero
-- divisao por zero
+- numeros positivos;
+- numeros negativos;
+- zero;
+- divisao por zero.
 
 Tambem foi criado um teste funcional simulando um fluxo com varias operacoes em sequencia.
 
 4. Git e GitHub
-Para a entrega, fazer os seguintes passos:
+Para a entrega, devem ser demonstrados os seguintes passos:
 - criar conta no GitHub;
 - criar o repositorio do projeto;
 - criar pelo menos uma branch;
 - realizar commits com as alteracoes do projeto;
-- fazer merge entre branchs;
+- fazer merge entre branches;
 - clonar um repositorio publico existente para demonstrar a atividade.
 
 5. Evidencias
@@ -41,5 +41,14 @@ Inserir prints mostrando:
 - commits realizados;
 - merge executado.
 
-6. Observacao final
-Este arquivo pode ser usado como base para a explicacao oral e para organizar as evidencias do trabalho.
+6. Roteiro para o video
+Explicar o projeto como se estivesse apresentando para um novo desenvolvedor da equipe:
+- mostrar a estrutura do projeto;
+- explicar a classe Calculadora;
+- explicar os testes unitarios;
+- explicar o teste funcional;
+- mostrar a execucao dos testes;
+- mostrar os itens de Git e GitHub pedidos na atividade.
+
+7. Observacao final
+Este documento pode ser usado como base para a apresentacao oral e para organizar as evidencias do trabalho.
