@@ -10,10 +10,11 @@ public class CalculadoraJanela extends JFrame {
     private JTextField display;
     private Calculadora calculadoraBackend;
 
-    // VARIÁVEIS DE CONTROLE DE ESTADO
-    private double primeiroNumero = 0;
+    // Variáveis de controle de estado
+    private String primeiroNumeroStr = "";
+    private String segundoNumeroStr = "";
     private String operadorSelecionado = "";
-    private boolean iniciarNovoNumero = false; // Indica se o próximo clique numérico limpa a tela para o 2º valor
+    private boolean temResultadoNoDisplay = false; // Identifica se o que está na tela é o resultado da última conta
 
     public CalculadoraJanela() {
         this.calculadoraBackend = new Calculadora();
@@ -23,6 +24,7 @@ public class CalculadoraJanela extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
+        setResizable(false);
 
         // 1. Criar e configurar o Display
         display = new JTextField("0");
@@ -44,7 +46,6 @@ public class CalculadoraJanela extends JFrame {
                 "0", "C", "=", "+"
         };
 
-        // Instanciando os ouvintes de eventos
         CliqueNumeroOuvinte cliqueNumero = new CliqueNumeroOuvinte();
         CliqueOperacaoOuvinte cliqueOperacao = new CliqueOperacaoOuvinte();
 
@@ -53,14 +54,11 @@ public class CalculadoraJanela extends JFrame {
             botao.setFont(new Font("Arial", Font.BOLD, 20));
             botao.setFocusable(false);
 
-            // Separação da lógica de cliques por tipo de botão
             if (texto.matches("[0-9]")) {
                 botao.addActionListener(cliqueNumero);
             } else if (texto.equals("C")) {
-                // Ação direta para o botão de limpar (Clear)
                 botao.addActionListener(e -> limparCalculadora());
             } else {
-                // Ouvinte para os operadores (+, -, *, /) e o igual (=)
                 botao.addActionListener(cliqueOperacao);
             }
 
@@ -70,32 +68,38 @@ public class CalculadoraJanela extends JFrame {
         add(painelBotoes, BorderLayout.CENTER);
     }
 
-    // Método auxiliar para resetar a calculadora (Botão C)
     private void limparCalculadora() {
         display.setText("0");
-        primeiroNumero = 0;
+        primeiroNumeroStr = "";
+        segundoNumeroStr = "";
         operadorSelecionado = "";
-        iniciarNovoNumero = false;
+        temResultadoNoDisplay = false;
     }
 
-    // Classe interna para controlar o clique dos números (Modificada)
     private class CliqueNumeroOuvinte implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             JButton botaoClicado = (JButton) e.getSource();
             String numero = botaoClicado.getText();
 
-            // Se o usuário acabou de clicar em um operador, limpamos a tela para o novo número
-            if (display.getText().equals("0") || iniciarNovoNumero) {
-                display.setText(numero);
-                iniciarNovoNumero = false; // Desmarca o sinalizador
+            // Se o usuário começar a digitar logo após um resultado, limpamos tudo para começar nova conta
+            if (temResultadoNoDisplay) {
+                limparCalculadora();
+            }
+
+            // Se não escolheu o operador ainda, está digitando o primeiro número
+            if (operadorSelecionado.isEmpty()) {
+                primeiroNumeroStr += numero;
+                display.setText(primeiroNumeroStr);
             } else {
-                display.setText(display.getText() + numero);
+                // Se já tem operador, está digitando o segundo número
+                segundoNumeroStr += numero;
+                // Exibe no formato: "Número1 Operador Número2"
+                display.setText(primeiroNumeroStr + " " + operadorSelecionado + " " + segundoNumeroStr);
             }
         }
     }
 
-    // Classe interna para tratar os operadores e o sinal de igual
     private class CliqueOperacaoOuvinte implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -103,12 +107,70 @@ public class CalculadoraJanela extends JFrame {
             String comando = botaoClicado.getText();
 
             if (comando.equals("=")) {
-                // todo: Chamar o back-end e exibir o resultado final aqui no próximo passo
+                // Só calcula se tivermos o primeiro número, o operador e o segundo número preenchidos
+                if (primeiroNumeroStr.isEmpty() || operadorSelecionado.isEmpty() || segundoNumeroStr.isEmpty()) {
+                    return;
+                }
+
+                double num1 = Double.parseDouble(primeiroNumeroStr);
+                double num2 = Double.parseDouble(segundoNumeroStr);
+                double resultado = 0;
+                boolean erroDivisao = false;
+
+                switch (operadorSelecionado) {
+                    case "+":
+                        resultado = calculadoraBackend.somar((int) num1, (int) num2);
+                        break;
+                    case "-":
+                        resultado = calculadoraBackend.subtrair((int) num1, (int) num2);
+                        break;
+                    case "*":
+                        resultado = calculadoraBackend.multiplicar((int) num1, (int) num2);
+                        break;
+                    case "/":
+                        try {
+                            resultado = calculadoraBackend.dividir(num1, num2);
+                        } catch (ArithmeticException ex) {
+                            display.setText("Erro: Divisão por 0");
+                            erroDivisao = true;
+                        }
+                        break;
+                }
+
+                if (!erroDivisao) {
+                    String resultadoFormatado;
+                    if (resultado % 1 == 0) {
+                        resultadoFormatado = String.valueOf((int) resultado);
+                    } else {
+                        resultadoFormatado = String.valueOf(resultado);
+                    }
+
+                    display.setText(resultadoFormatado);
+
+                    // Prepara o estado caso o usuário queira usar o resultado para uma próxima operação contínua
+                    primeiroNumeroStr = resultadoFormatado;
+                } else {
+                    primeiroNumeroStr = "";
+                }
+
+                // Reseta os estados secundários
+                segundoNumeroStr = "";
+                operadorSelecionado = "";
+                temResultadoNoDisplay = true;
+
             } else {
-                // Guarda o primeiro número digitado convertido para double
-                primeiroNumero = Double.parseDouble(display.getText());
-                operadorSelecionado = comando;
-                iniciarNovoNumero = true; // Avisa que o próximo número digitado iniciará do zero
+                // Se o usuário clicou em um operador (+, -, *, /)
+
+                // Se ele acabou de obter um resultado e clica em um operador, usamos esse resultado como primeiro número
+                if (temResultadoNoDisplay && !primeiroNumeroStr.isEmpty()) {
+                    temResultadoNoDisplay = false;
+                }
+
+                // Só permite colocar o operador se o primeiro número já tiver sido iniciado
+                if (!primeiroNumeroStr.isEmpty() && segundoNumeroStr.isEmpty()) {
+                    operadorSelecionado = comando;
+                    display.setText(primeiroNumeroStr + " " + operadorSelecionado);
+                }
             }
         }
     }
